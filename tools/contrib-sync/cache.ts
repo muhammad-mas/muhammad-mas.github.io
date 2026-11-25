@@ -53,6 +53,7 @@ export const emptyGitHubCache = (): GitHubCache => ({ version: 1, lastSync: null
 
 const safeName = (name: string) => name.replace(/[^a-z0-9_-]/gi, '_');
 export const azureCachePath = (org: string, dir = CACHE_DIR) => `${dir}/azure-${safeName(org)}.json`;
+export const bitbucketCachePath = (workspace: string, dir = CACHE_DIR) => `${dir}/bitbucket-${safeName(workspace)}.json`;
 export const gitHubCachePath = (dir = CACHE_DIR) => `${dir}/github.json`;
 
 export function readCache<T>(path: string, empty: () => T): T {

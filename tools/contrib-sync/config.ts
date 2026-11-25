@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import type { BitbucketConfig } from './bitbucket.ts';
 
 export type Kind = 'work' | 'personal';
 
@@ -34,6 +35,8 @@ export interface SyncConfig {
   from: string;
   azureDevOps: AzureOrgConfig[];
   github?: GitHubConfig;
+  /** Bitbucket Cloud workspaces (optional). */
+  bitbucket?: BitbucketConfig[];
 }
 
 export const TOOL_DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -61,7 +64,15 @@ export function parseConfig(raw: unknown): SyncConfig {
   if (c.github && typeof c.github.login !== 'string') throw new Error('Config: "github.login" is required.');
   // Throws RangeError for an unknown zone.
   new Intl.DateTimeFormat('en-CA', { timeZone: c.timeZone });
-  return { timeZone: c.timeZone, from: c.from, azureDevOps: azure, github: c.github, projectRepos: c.projectRepos };
+  const bitbucket = c.bitbucket ?? [];
+  if (!Array.isArray(bitbucket)) throw new Error('Config: "bitbucket" must be a list.');
+  for (const ws of bitbucket) {
+    if (!ws.workspace || !ws.username) throw new Error('Config: each bitbucket entry needs "workspace" and "username" (your Atlassian email).');
+    if (!Array.isArray(ws.authorEmails) || ws.authorEmails.length === 0) {
+      throw new Error(`Config: bitbucket "${ws.workspace}" needs at least one "authorEmails" entry.`);
+    }
+  }
+  return { timeZone: c.timeZone, from: c.from, azureDevOps: azure, github: c.github, bitbucket, projectRepos: c.projectRepos };
 }
 
 export function loadConfig(path = CONFIG_PATH): SyncConfig {

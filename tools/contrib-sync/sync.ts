@@ -1,6 +1,6 @@
-// npm run sync [-- --only azure|github] [--full] [--dry-run] [--verbose]
+// npm run sync [-- --only azure|bitbucket|github] [--full] [--dry-run] [--verbose]
 //
-// Pulls commit dates from Azure DevOps (work) and GitHub (personal), then
+// Pulls commit dates from Azure DevOps and Bitbucket (work) and GitHub (personal), then
 // writes public/data/contributions.json with daily counts only.
 // Tokens come from .env; org names, emails and repo names stay in the
 // gitignored config.local.json and cache/ folder.
@@ -10,8 +10,10 @@ import { dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import { azureDays, buildOutput, gitHubDays, repoDays, toLocalDay, type DayCounts } from './aggregate.ts';
 import { syncAzureOrg, basicAuth } from './azureDevOps.ts';
+import { syncBitbucketWorkspace } from './bitbucket.ts';
 import {
   azureCachePath,
+  bitbucketCachePath,
   emptyAzureCache,
   emptyGitHubCache,
   gitHubCachePath,
@@ -37,6 +39,7 @@ const { values: args } = parseArgs({
 
 const runAzure = !args.only || args.only === 'azure';
 const runGitHub = !args.only || args.only === 'github';
+const runBitbucket = !args.only || args.only === 'bitbucket';
 const log = { info: (message: string) => console.log(message) };
 const warn = (message: string) => {
   if (process.env.REQUIRE_COMPLETE_SYNC === '1') throw new Error(message);
@@ -72,6 +75,29 @@ async function main(): Promise<void> {
       warn(`${org.patEnv ?? 'AZDO_PAT'} is not set — using cached Azure DevOps data for this org (${Object.keys(cache.commits).length} commits).`);
     }
     azureCaches.push({ kind: org.kind ?? 'work', cache });
+  }
+
+  // Bitbucket Cloud, one cache per workspace (same shape as Azure DevOps: commits by SHA).
+  for (const ws of config.bitbucket ?? []) {
+    const path = bitbucketCachePath(ws.workspace);
+    let cache = readCache(path, emptyAzureCache);
+    const token = process.env[ws.tokenEnv ?? 'BITBUCKET_TOKEN'];
+    if (runBitbucket && token) {
+      const client = createHttpClient({ authorization: `Basic ${Buffer.from(`${ws.username}:${token}`).toString('base64')}`, service: 'Bitbucket' });
+      try {
+        const updated = await syncBitbucketWorkspace(client, ws, args.full ? emptyAzureCache() : cache, {
+          configFrom: config.from, now, log: args.verbose ? log : { info: () => {} },
+        });
+        if (!args['dry-run']) writeCache(path, updated);
+        cache = updated;
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
+        warn(`${ws.workspace} (Bitbucket): skipped (${reason}). Using cached data (${Object.keys(cache.commits).length} commits).`);
+      }
+    } else if (runBitbucket) {
+      warn(`${ws.tokenEnv ?? 'BITBUCKET_TOKEN'} is not set — using cached Bitbucket data (${Object.keys(cache.commits).length} commits).`);
+    }
+    azureCaches.push({ kind: ws.kind ?? 'work', cache });
   }
 
   // GitHub.

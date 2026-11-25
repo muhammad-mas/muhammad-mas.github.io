@@ -12,9 +12,9 @@
 zero=0000000000000000000000000000000000000000
 fail() { echo "pre-push: BLOCKED: $1" >&2; exit 1; }
 
-# Token formats: GitHub (classic + fine-grained), Azure DevOps PATs (new format carries "AZDO"),
+# Token formats: GitHub (classic + fine-grained), Azure DevOps PATs (new format carries "AZDO"), Atlassian/Bitbucket (ATATT…),
 # AWS keys, private key blocks; plus work email domains that must never be published.
-secrets='github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|[A-Za-z0-9]{70,}AZDO[A-Za-z0-9]{4,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|@paramet\.co\.uk|@greybeardsupport\.com'
+secrets='github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|[A-Za-z0-9]{70,}AZDO[A-Za-z0-9]{4,}|AKIA[0-9A-Z]{16}|ATATT[A-Za-z0-9_=-]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY-----|@paramet\.co\.uk|@greybeardsupport\.com'
 forbidden='(^|/)\.env($|\.)|(^|/)config\.local\.json$|contrib-sync/cache/|\.(pem|key|pfx|p12)$'
 
 # 0. Fresh counts. Skipped when there's no local sync setup, or when the caller has just synced
