@@ -1,0 +1,63 @@
+#!/bin/sh
+# Runs on this PC before every `git push` (including the daily publish task):
+#   0. refreshes the commit counts (npm run sync); if they changed it commits them and stops,
+#      so you push again with fresh data (a hook can't add commits to a push already under way)
+# and stops the push if:
+#   1. a secret file is in what's being pushed (.env, config.local.json, sync cache, keys)
+#   2. a token or a work email appears in any pushed file
+#   3. the tests fail (they include the "dates and counts only" check on contributions.json)
+# Switched on by `npm install` (package.json "prepare" sets core.hooksPath to .githooks).
+# Emergency bypass: git push --no-verify (don't, unless you've checked by hand).
+
+zero=0000000000000000000000000000000000000000
+fail() { echo "pre-push: BLOCKED: $1" >&2; exit 1; }
+
+# Token formats: GitHub (classic + fine-grained), Azure DevOps PATs (new format carries "AZDO"),
+# AWS keys, private key blocks; plus work email domains that must never be published.
+secrets='github_pat_[A-Za-z0-9_]{20,}|gh[pousr]_[A-Za-z0-9]{30,}|[A-Za-z0-9]{70,}AZDO[A-Za-z0-9]{4,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|@paramet\.co\.uk|@greybeardsupport\.com'
+forbidden='(^|/)\.env($|\.)|(^|/)config\.local\.json$|contrib-sync/cache/|\.(pem|key|pfx|p12)$'
+
+# 0. Fresh counts. Skipped when there's no local sync setup, or when the caller has just synced
+#    (the daily task sets SKIP_PREPUSH_SYNC=1).
+data=public/data/contributions.json
+if [ -z "$SKIP_PREPUSH_SYNC" ] && [ -f package.json ] && [ -f tools/contrib-sync/config.local.json ]; then
+  echo "pre-push: refreshing commit counts (npm run sync)..." >&2
+  if npm run sync --silent >/dev/null 2>&1; then
+    if git ls-files --error-unmatch "$data" >/dev/null 2>&1; then
+      # "generatedAt" and "to" change on every run; only the counts matter.
+      if git diff --quiet -I '"generatedAt":' -I '"to":' -- "$data"; then
+        git checkout -- "$data" 2>/dev/null # timestamps only: keep the working copy clean
+      else
+        git commit -q -m "Update activity $(date +%Y-%m-%d)" -- "$data" || fail "couldn't commit the refreshed counts"
+        fail "your commit counts changed, so they're now committed. Run git push again to include them."
+      fi
+    fi
+  else
+    echo "pre-push: warning: sync failed (offline or an expired token?). Pushing with the counts you already have." >&2
+  fi
+fi
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue # deleting a branch: nothing to check
+
+  files=$(git ls-tree -r --name-only "$local_sha")
+  bad_files=$(printf '%s\n' "$files" | grep -E "$forbidden" | grep -v '^\.env\.example$')
+  [ -n "$bad_files" ] && fail "secret file(s) in the push:
+$bad_files"
+
+  hits=$(git grep -I -l -E "$secrets" "$local_sha" -- . ':!package-lock.json' 2>/dev/null | sed "s/^$local_sha://")
+  [ -n "$hits" ] && fail "possible token or work email in:
+$hits"
+
+  if printf '%s\n' "$files" | grep -qx '\.env\.example'; then
+    git show "$local_sha:.env.example" | grep -qE '^[A-Z_]+=.+' && fail ".env.example has a value filled in; it must stay empty"
+  fi
+done
+
+if [ -f package.json ]; then
+  echo "pre-push: running tests (includes the published-data privacy check)..." >&2
+  npm test --silent >/dev/null 2>&1 || fail "tests failed (run: npm test)"
+fi
+
+echo "pre-push: OK" >&2
+exit 0

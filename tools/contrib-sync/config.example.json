@@ -1,0 +1,18 @@
+{
+  "timeZone": "Europe/London",
+  "from": "2024-01-01",
+  "azureDevOps": [
+    {
+      "organization": "your-work-org",
+      "authorEmails": ["you@yourcompany.com"],
+      "kind": "work",
+      "patEnv": "AZDO_PAT",
+      "allBranches": true
+    }
+  ],
+  "github": {
+    "login": "muhammad-mas",
+    "tokenEnv": "GITHUB_TOKEN",
+    "excludeRepos": []
+  }
+}

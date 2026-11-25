@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Muhammad Arslan — Full-Stack Software Engineer</title>
+    <meta
+      name="description"
+      content="Full-stack software engineer in London: C# .NET back ends and APIs, React, Vue and React Native. 6+ years across manufacturing, a UK trade association and aerospace."
+    />
+    <meta property="og:title" content="Muhammad Arslan — Full-Stack Software Engineer" />
+    <meta
+      property="og:description"
+      content="C# .NET, React, Vue, React Native. London, UK."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://muhammad-mas.github.io/" />
+    <meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Apply a saved theme before first paint so there is no light/dark flash.
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Cloudflare Web Analytics: anonymous visit counts, no cookies. The token is public by design. -->
+    <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "0232ee42fdad4f10ae64a4d2e3df0bcb"}'></script>
+  </body>
+</html>
