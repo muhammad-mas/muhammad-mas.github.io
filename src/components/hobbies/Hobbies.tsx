@@ -10,7 +10,7 @@ export function Hobbies({ contributions }: { contributions?: ContributionsFile }
         <h3 id="hobby-football" className="hobby__title">
           <span aria-hidden="true">⚽</span> Football: free kick
         </h3>
-        <p className="hobby__intro">Score through the hoops in the goal to reveal my numbers and coding habits.</p>
+        <p className="hobby__intro">Score through the hoops to unlock my stats.</p>
         <FreeKickSection contributions={contributions} />
       </article>
 
@@ -18,7 +18,7 @@ export function Hobbies({ contributions }: { contributions?: ContributionsFile }
         <h3 id="hobby-gym" className="hobby__title">
           <span aria-hidden="true">🏋️</span> Gym: rep challenge
         </h3>
-        <p className="hobby__intro">How many clean squats can you time in 20 seconds?</p>
+        <p className="hobby__intro">Most clean squats in 20 seconds.</p>
         <RepChallengeSection />
       </article>
     </div>

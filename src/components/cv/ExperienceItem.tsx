@@ -14,11 +14,13 @@ export function ExperienceItem({ job }: { job: Job }) {
         </p>
       </div>
       <p className="job__summary">{job.summary}</p>
-      <ul className="job__highlights">
-        {job.highlights.map((item) => (
-          <li key={item.slice(0, 32)}>{item}</li>
-        ))}
-      </ul>
+      {job.highlights.length > 0 && (
+        <ul className="job__highlights">
+          {job.highlights.map((item) => (
+            <li key={item.slice(0, 32)}>{item}</li>
+          ))}
+        </ul>
+      )}
       <ul className="chip-list" aria-label={`${job.company} tech stack`}>
         {job.stack.map((tech) => (
           <li key={tech} className="chip">

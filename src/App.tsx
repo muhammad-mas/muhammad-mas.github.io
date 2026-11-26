@@ -21,7 +21,6 @@ const NAV: NavLink[] = [
   { href: '#projects', label: 'Projects' },
   { href: '#skills', label: 'Skills' },
   { href: '#education', label: 'Education' },
-  { href: '#certifications', label: 'Certifications' },
   { href: '#hobbies', label: 'Hobbies' },
 ];
 
@@ -41,14 +40,14 @@ export function App() {
         <Section
           id="activity"
           title="Activity"
-          intro="Commits per day across work and personal projects. Work commits come from Azure DevOps, personal ones from GitHub. Only daily counts are published — no code, repo names or messages."
+          intro="Commits per day, work and personal."
         >
           <Activity query={contributions} />
         </Section>
         <Section id="experience" title="Experience">
           <Experience jobs={profile.jobs} />
         </Section>
-        <Section id="projects" title="Projects" intro="Things I build outside work to learn and try ideas.">
+        <Section id="projects" title="Projects" intro="What I build outside work.">
           <Projects projects={projects} contributions={contributions.data} />
         </Section>
         <Section id="skills" title="Skills">
@@ -56,11 +55,9 @@ export function App() {
         </Section>
         <Section id="education" title="Education">
           <Education entries={profile.education} />
-        </Section>
-        <Section id="certifications" title="Certifications">
           <Certifications />
         </Section>
-        <Section id="hobbies" title="Hobbies" intro="Away from the keyboard I play football and train at the gym. Two small games to have a go at.">
+        <Section id="hobbies" title="Hobbies" intro="Football and the gym, as two small games.">
           <Hobbies contributions={contributions.data} />
         </Section>
       </main>

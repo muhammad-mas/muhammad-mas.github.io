@@ -1,5 +1,8 @@
 import type { Profile } from '../../content/profile';
-import { GitHubIcon, LinkedInIcon, MailIcon, PinIcon } from '../layout/Icons';
+import { DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, PinIcon } from '../layout/Icons';
+
+// Phone-free copies of the CV, served as static files from public/resume.
+const RESUME = `${import.meta.env.BASE_URL}resume/Muhammad_Arslan_Resume`;
 
 export function Hero({ profile }: { profile: Profile }) {
   const { contact } = profile;
@@ -31,6 +34,12 @@ export function Hero({ profile }: { profile: Profile }) {
           </a>
           <a className="button" href={contact.gitHub} rel="me">
             <GitHubIcon /> GitHub
+          </a>
+          <a className="button" href={`${RESUME}.pdf`} download>
+            <DownloadIcon /> CV (PDF)
+          </a>
+          <a className="button" href={`${RESUME}.docx`} download>
+            <DownloadIcon /> CV (Word)
           </a>
         </div>
       </div>

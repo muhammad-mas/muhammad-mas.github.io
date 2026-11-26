@@ -7,7 +7,6 @@ export interface Project {
   slug: string;
   name: string;
   summary: string;
-  highlights: string[];
   stack: string[];
   status: ProjectStatus;
   started: string;

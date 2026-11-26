@@ -2,20 +2,14 @@
   {
     "slug": "paperwork-brain",
     "name": "Paperwork Brain",
-    "summary": "Upload a bill, warranty or renewal letter, review the fields AI extracts, and get reminders or answers that cite the original document.",
-    "highlights": [
-      "Event-driven .NET microservices orchestrated with Aspire: upload API, extraction worker, reminders service.",
-      "RabbitMQ with the outbox pattern, PostgreSQL, blob storage (Azurite locally).",
-      "Claude extraction and cited Q&A, with PostgreSQL and pgvector for document search."
-    ],
+    "summary": "Upload a bill or warranty; AI pulls out the key dates, sends reminders and answers questions with sources.",
     "stack": [
       ".NET 10",
       "Aspire",
       "RabbitMQ",
       "PostgreSQL",
       "Claude API",
-      "React",
-      "TypeScript"
+      "React"
     ],
     "status": "in-progress",
     "started": "Nov 2026",
@@ -25,18 +19,12 @@
   {
     "slug": "price-scout",
     "name": "PriceScout",
-    "summary": "Track UK electronics prices, see a product’s price history and set an in-app alert for a target price. The current build uses sample prices.",
-    "highlights": [
-      "Searchable catalog with product deduplication enforced in PostgreSQL.",
-      "Repeatable sample imports with one alert per saved target.",
-      "React client backed by a typed .NET API and orchestrated with Aspire."
-    ],
+    "summary": "UK electronics price history and target-price alerts.",
     "stack": [
       ".NET 10",
       "Aspire",
       "PostgreSQL",
-      "React",
-      "TypeScript"
+      "React"
     ],
     "status": "in-progress",
     "started": "Nov 2026",

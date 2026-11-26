@@ -18,3 +18,4 @@ tools/contrib-sync/cache/
 
 # Local editor/agent settings
 .claude/
+*.tsbuildinfo

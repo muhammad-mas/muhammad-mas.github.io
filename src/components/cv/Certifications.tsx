@@ -2,16 +2,18 @@ import { certifications } from '../../content/certifications';
 
 export function Certifications() {
   return (
-    <ul className="education">
-      {certifications.map(({ title, issuer, date, url }) => (
-        <li key={url} className="education__item card">
-          <h3 className="education__degree">
+    <>
+      <h3 className="certs__title">Certifications</h3>
+      <ul className="certs">
+        {certifications.map(({ title, issuer, date, url }) => (
+          <li key={url} className="certs__item">
             <a href={url}>{title}</a>
-          </h3>
-          <p className="education__school">{issuer}</p>
-          <p className="education__date">{date}</p>
-        </li>
-      ))}
-    </ul>
+            <span className="certs__meta">
+              {issuer} · {date.slice(-4)}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

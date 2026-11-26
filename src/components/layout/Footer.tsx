@@ -12,7 +12,7 @@ export function Footer({ name, contact }: { name: string; contact: Contact }) {
           <a href={contact.gitHub}>GitHub</a>
         </p>
         <p className="site-footer__note">
-          Built with React, TypeScript and Vite. Visits are counted anonymously with Cloudflare Web Analytics: no cookies, no tracking.
+          Built with React and TypeScript. Anonymous visit counts, no cookies.
         </p>
       </div>
     </footer>

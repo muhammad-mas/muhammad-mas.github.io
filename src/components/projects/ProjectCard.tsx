@@ -19,13 +19,7 @@ export function ProjectCard({ project, contributions }: { project: Project; cont
         </h3>
         <span className={`project__status project__status--${project.status}`}>{STATUS_LABEL[project.status]}</span>
       </div>
-      <p className="project__meta">Started {project.started}</p>
       <p className="project__summary">{project.summary}</p>
-      <ul className="project__highlights">
-        {project.highlights.map((item) => (
-          <li key={item.slice(0, 32)}>{item}</li>
-        ))}
-      </ul>
       <ul className="chip-list" aria-label={`${project.name} tech stack`}>
         {project.stack.map((tech) => (
           <li key={tech} className="chip">
@@ -52,7 +46,7 @@ export function ProjectCard({ project, contributions }: { project: Project; cont
         )}
         {project.repoPublic === false && (
           <span className="project__private">
-            <LockIcon /> Private repository — happy to walk through it
+            <LockIcon /> Private repo, demo on request
           </span>
         )}
       </div>
